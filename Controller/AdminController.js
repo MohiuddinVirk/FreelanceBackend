@@ -17,18 +17,8 @@ let addadmin=async (req, res) => {
 }
  let getallcutomers=async (req, res) => {
     try {
-      // Extracting pagination parameters from query string or using default values
-      const page = parseInt(req.query.page) || 1;
-      const pageSize = parseInt(req.query.pageSize) || 20;
-  
-      // Calculate the skip value based on pagination parameters
-      const skip = (page - 1) * pageSize;
-  
       // Fetch customers with pagination using Mongoose
       const customers = await Customer.find({})
-        .skip(skip)
-        .limit(pageSize)
-        .exec();
   
       res.status(200).json(customers);
     } catch (error) {
@@ -38,18 +28,18 @@ let addadmin=async (req, res) => {
   };
   let getallsellers=async (req, res) => {
     try {
-      // Extracting pagination parameters from query string or using default values
-      const page = parseInt(req.query.page) || 1;
-      const pageSize = parseInt(req.query.pageSize) || 20;
+      // // Extracting pagination parameters from query string or using default values
+      // const page = parseInt(req.query.page) || 1;
+      // const pageSize = parseInt(req.query.pageSize) || 20;
   
-      // Calculate the skip value based on pagination parameters
-      const skip = (page - 1) * pageSize;
+      // // Calculate the skip value based on pagination parameters
+      // const skip = (page - 1) * pageSize;
   
       // Fetch customers with pagination using Mongoose
       const seller = await Seller.find({})
-        .skip(skip)
-        .limit(pageSize)
-        .exec();
+        // .skip(skip)
+        // .limit(pageSize)
+        // .exec();
   
       res.status(200).json(seller);
     } catch (error) {
@@ -60,17 +50,17 @@ let addadmin=async (req, res) => {
   let getallfreelancers=async (req, res) => {
     try {
       // Extracting pagination parameters from query string or using default values
-      const page = parseInt(req.query.page) || 1;
-      const pageSize = parseInt(req.query.pageSize) || 20;
+      // const page = parseInt(req.query.page) || 1;
+      // const pageSize = parseInt(req.query.pageSize) || 20;
   
-      // Calculate the skip value based on pagination parameters
-      const skip = (page - 1) * pageSize;
+      // // Calculate the skip value based on pagination parameters
+      // const skip = (page - 1) * pageSize;
   
       // Fetch customers with pagination using Mongoose
       const freelancer = await Freelancer.find({})
-        .skip(skip)
-        .limit(pageSize)
-        .exec();
+        // .skip(skip)
+        // .limit(pageSize)
+        // .exec();
   
       res.status(200).json(freelancer);
     } catch (error) {
@@ -178,6 +168,22 @@ let addadmin=async (req, res) => {
       res.status(500).json({ error: 'Internal Server Error' });
     }
   }
+  let getallpurchasesincludedetail=async(req,res)=>{
+    try {
+      let id =req.params.id;
+      let purchases=await Purchases.find({BuyerId:id})
+      let temp=await Promise.all(
+        purchases.map(async(purchase)=>{
+          let sellerproject= await SellerProjects.findOne({_id:purchase.ProjectId})
+          return sellerproject
+        })
+      )
+      res.status(200).json(temp);
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: 'Internal Server Error' });
+    }
+  }
   let getcustomerbyid=async(req,res)=>{
     try {
       let id =req.params.id;
@@ -243,6 +249,7 @@ let addadmin=async (req, res) => {
             TotalNumberofFeddbacks: freelancer.TotalNumberofFeddbacks,
             AccountBalance: freelancer.AccountBalance,
             Revenue: revenue,
+            Specialities:freelancer.Specialities
           };
         })
       );
@@ -322,6 +329,7 @@ let addadmin=async (req, res) => {
             FullName: buyer.FullName,
             Email: buyer.Email,
             TotalSpending: totalSpending,
+            Interests:buyer.Interests
           };
         })
       );
@@ -486,8 +494,52 @@ let gettopsellercategoriesbyrevenue=async(req,res)=>{
   }
 }
 
-  let getallfreelancecategoriesbyrevenuesort=async(req,res)=>{
-
+  let gettopfreelancecategoriesbyrevenuesort=async(req,res)=>{
+    try {
+      // Fetch all projects
+      const projects = await Project.find({});
+      // Calculate revenue for each technology
+      const technologyRevenue = {};
+      projects.forEach((project) => {
+        const { Keywords, Budget } = project;
+        if (Keywords && Budget) {
+          const projectRevenue = parseInt(Budget, 10);
+          Keywords.forEach((technology) => {
+            technologyRevenue[technology] = (technologyRevenue[technology] || 0) + projectRevenue;
+          });
+        }
+      });
+  
+      // Convert technologyRevenue object to an array of objects
+      const technologyRevenueArray = Object.keys(technologyRevenue).map((technology) => ({
+        technology,
+        revenue: technologyRevenue[technology],
+      }));
+  
+      // Sort technologies by revenue in descending order
+      const sortedTechnologies = technologyRevenueArray.sort((a, b) => b.revenue - a.revenue);
+  
+      // Get the top 5 technologies
+      const topTechnologies = sortedTechnologies.slice(0, 5);
+  
+      res.status(200).json(topTechnologies);
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: 'Internal Server Error' });
+    }
+  }
+  let getallnotifications=async(req,res)=>{
+    try {
+      // Fetch all projects
+      const freelancer = await Freelancer.find({});
+      const seller = await Seller.find({});
+      const customer = await Customer.find({});
+    
+      res.status(200).json({freelancer,seller,customer});
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: 'Internal Server Error' });
+    }
   }
   let gettopfreelancerscategories=async(req,res)=>{
     try {
@@ -749,6 +801,62 @@ let deletetechnology=async(req,res)=>{
       res.status(404).json({"Message":"Error" , err:err})
     }
 }
+let getadminstats=async(req,res)=>{
+  try {
+    const sellerproject = await SellerProjects.find({});
+    const totalRevenue = sellerproject.reduce((total, project) => {
+      return total + project.Revenue;
+    }, 0);
+    const freelanceprojects = await Project.find({});
+    const totalRevenuefreelence = freelanceprojects.reduce((total, project) => {
+      return total + project.Budget;
+    }, 0);
+    let assigned=await Project.find({Status:"APPROVED"})
+    let delivered=await Project.find({Status:"DELIVERED"})
+    let sold=await Purchases.find({})
+    let assignednumber=assigned.length;
+    let deliverednumber=delivered.length;
+    let soldnumber=sold.length
+  // Fetch all projects
+  const projects = await Project.find({});
+  
+  // Extract technologies from all projects
+  const allTechnologies = projects.reduce(
+    (technologies, project) => [...technologies, ...project.Keywords],
+    []
+  );
+  const resultArray =await countTechnologyOccurrences(allTechnologies);
+  const sortedTechnologies = resultArray.sort(
+    (a, b) => b.occurrence - a.occurrence
+  );
+// Fetch all projects
+const allsellerprojects = await SellerProjects.find({});
+// Calculate revenue for each technology
+const technologyRevenue = {};
+allsellerprojects.forEach((project) => {
+  const { Technologies, Price } = project;
+  if (Technologies && Price) {
+    const projectRevenue = parseInt(Price, 10);
+    Technologies.forEach((technology) => {
+      technologyRevenue[technology] = (technologyRevenue[technology] || 0) + projectRevenue;
+    });
+  }
+});
+
+const technologyRevenueArray = Object.keys(technologyRevenue).map((technology) => ({
+  technology,
+  revenue: technologyRevenue[technology],
+}));
+
+// Sort technologies by revenue in descending order
+const sortedTechnologiesseller = technologyRevenueArray.sort((a, b) => b.revenue - a.revenue);
+
+    res.status(200).json({ totalRevenue,totalRevenuefreelence,assignednumber,deliverednumber,soldnumber,sortedTechnologies,sortedTechnologiesseller });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+}
   module.exports  ={
     getallcutomers,
     getallsellers,
@@ -758,7 +866,7 @@ let deletetechnology=async(req,res)=>{
     getallsellerprojects,
     getallfreelanceprojectsbytechnology,
     getallfreelanceprojectsassignedbyid,
-    getallfreelancecategoriesbyrevenuesort,//to be done
+    gettopfreelancecategoriesbyrevenuesort,
     getallfreelancersbyrevenuesort,
     getallsellerprojectsbyrevenuesort,
     getallfreelanceprojectsuploadedbyid,
@@ -784,5 +892,8 @@ let deletetechnology=async(req,res)=>{
     changepassword,
     getallsellerprojectdetailbyid,
     getcustomerbyid,
-    getallpurchases
+    getallpurchases,
+    getallnotifications,
+    getallpurchasesincludedetail,
+    getadminstats
 }

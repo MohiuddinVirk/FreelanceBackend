@@ -1,54 +1,54 @@
 const {getallcutomers,getallsellers,getallfreelancers,getallprojects,getallsellerprojectsbytechnology,
     getallsellerprojects ,getallfreelanceprojectsbytechnology,getallfreelanceprojectsassignedbyid
-,getallfreelancecategoriesbyrevenuesort,getallfreelancersbyrevenuesort,getallsellerprojectsbyrevenuesort,
+,gettopfreelancecategoriesbyrevenuesort,getallfreelancersbyrevenuesort,getallsellerprojectsbyrevenuesort,
 getallfreelanceprojectsuploadedbyid,getallsellerprojectsbyid,gettopfreelancers,Login,gettopsellers,
 gettopcustomers,gettopsellerscategories,gettopsellercategoriesbyrevenue,addtechnology,deletetechnology,
 gettopfreelancerscategories,disablefreelancer,disablecustomer,disableseller,ablecustomer,ableseller,ablefreelancer,
 addadmin,updateuserprofileById,getprofile,changepassword,getallsellerprojectdetailbyid,getcustomerbyid,
-getallpurchases} = require("../Controller/AdminController")
+getallpurchases,getallnotifications,getallpurchasesincludedetail,getadminstats} = require("../Controller/AdminController")
 const express = require("express");
 const { AuthenticateUser } = require("../utils");
 const router = express.Router();
 router.post("/login"  ,  Login )
-router.get("/getallcutomers"  ,  getallcutomers )
-router.get("/getallsellers"  ,  getallsellers )
-router.get("/getfreelancers"  ,  getallfreelancers )
-router.get("/getallfreelanceprojects"  ,  getallprojects )
-router.get("/getcustomerbyid/:id"  ,  getcustomerbyid )
-router.get("/getallfreelanceprojectsbytechnology/:technology"  ,  getallfreelanceprojectsbytechnology )
-// router.get("/getallfreelanceprojectsbybudgetrange/:budget"  ,  getallfreelanceprojectsbytechnology )
-router.get("/getallfreelancecategoriesbyrevenuesort"  ,  getallfreelancecategoriesbyrevenuesort )// to be done
-router.get("/getallfreelancersbyrevenuesort"  ,  getallfreelancersbyrevenuesort )// to be confirmed/////////////////////
-router.get("/getallfreelanceprojectsassignedbyid/:id"  ,  getallfreelanceprojectsassignedbyid )
-router.get("/getallfreelanceprojectsuploadedbyid/:id"  ,  getallfreelanceprojectsuploadedbyid )
-router.get("/getallsellerprojects"  ,  getallsellerprojects )
-router.get("/getallsellerprojectsbytechnology/:technology"  ,  getallsellerprojectsbytechnology )
-router.get("/getallsellerprojectsbyrevenuesort"  ,  getallsellerprojectsbyrevenuesort )
-router.get("/getallsellerprojectsbyid/:id"  ,  getallsellerprojectsbyid )
-router.get("/getallsellerprojectdetailbyid/:id"  ,  getallsellerprojectdetailbyid )
-router.get("/getallnotifications"  ,  getallprojects )// to be done
-router.get("/getadminrevenuetotal"  ,  getallprojects )// to be done
-router.get("/getadminrevenuetotalfreelance"  ,  getallprojects )// to be done
-router.get("/getadminrevenuetotalseller"  ,  getallprojects )// to be done
-router.get("/gettopfreelancers"  ,  gettopfreelancers )
-router.get("/getallpurchases/:id"  ,  getallpurchases )
-router.get("/gettopsellers"  ,  gettopsellers )
-router.get("/gettopcustomers"  ,  gettopcustomers )
-router.get("/gettopsellercategoriesbyrevenue"  ,  gettopsellercategoriesbyrevenue )
-router.get("/gettopsellerscategories"  ,  gettopsellerscategories )
+router.get("/getallcutomers" ,AuthenticateUser ,  getallcutomers )
+router.get("/getallsellers" ,AuthenticateUser ,  getallsellers )
+router.get("/getfreelancers" ,AuthenticateUser ,  getallfreelancers )
+router.get("/getallfreelanceprojects" ,AuthenticateUser ,  getallprojects )
+router.get("/getcustomerbyid/:id" ,AuthenticateUser ,  getcustomerbyid )
+router.get("/getallfreelanceprojectsbytechnology/:technology" ,AuthenticateUser ,  getallfreelanceprojectsbytechnology )
+router.get("/gettopfreelancecategoriesbyrevenuesort" ,AuthenticateUser ,  gettopfreelancecategoriesbyrevenuesort )
+router.get("/getallfreelancersbyrevenuesort" ,AuthenticateUser ,  getallfreelancersbyrevenuesort )// to be confirmed/////////////////////
+router.get("/getallfreelanceprojectsassignedbyid/:id" ,AuthenticateUser ,  getallfreelanceprojectsassignedbyid )
+router.get("/getallfreelanceprojectsuploadedbyid/:id" ,AuthenticateUser ,  getallfreelanceprojectsuploadedbyid )
+router.get("/getallsellerprojects" ,AuthenticateUser ,  getallsellerprojects )
+router.get("/getallsellerprojectsbytechnology/:technology" ,AuthenticateUser ,  getallsellerprojectsbytechnology )
+router.get("/getallsellerprojectsbyrevenuesort" ,AuthenticateUser ,  getallsellerprojectsbyrevenuesort )
+router.get("/getallsellerprojectsbyid/:id" ,AuthenticateUser ,  getallsellerprojectsbyid )
+router.get("/getallsellerprojectdetailbyid/:id" ,AuthenticateUser ,  getallsellerprojectdetailbyid )
+router.get("/getallnotifications"  ,AuthenticateUser,  getallnotifications )
+router.get("/getadminstats"  ,  getadminstats )// to be done
+// router.get("/getadminrevenuetotalfreelance"  ,  getallprojects )// to be done
+// router.get("/getadminrevenuetotalseller"  ,  getallprojects )// to be done
+router.get("/gettopfreelancers" ,AuthenticateUser ,  gettopfreelancers )
+router.get("/getallpurchases/:id",AuthenticateUser  ,  getallpurchases )
+router.get("/getallpurchasesincludedetail/:id" ,AuthenticateUser ,  getallpurchasesincludedetail )
+router.get("/gettopsellers" ,AuthenticateUser ,  gettopsellers )
+router.get("/gettopcustomers" ,AuthenticateUser ,  gettopcustomers )
+router.get("/gettopsellercategoriesbyrevenue" ,AuthenticateUser ,  gettopsellercategoriesbyrevenue )
+router.get("/gettopsellerscategories" ,AuthenticateUser ,  gettopsellerscategories )
 router.get("/getprofile" ,AuthenticateUser ,  getprofile )
-router.get("/gettopfreelancerscategories"  ,  gettopfreelancerscategories )
-router.put("/disablefreelancer"  ,  disablefreelancer )
-router.put("/disableseller"  ,  disableseller )
-router.put("/disablecustomer"  ,  disablecustomer )
-router.put("/ablefreelancer"  ,  ablefreelancer )
+router.get("/gettopfreelancerscategories" ,AuthenticateUser ,  gettopfreelancerscategories )
+router.put("/disablefreelancer" ,AuthenticateUser ,  disablefreelancer )
+router.put("/disableseller" ,AuthenticateUser ,  disableseller )
+router.put("/disablecustomer",AuthenticateUser  ,  disablecustomer )
+router.put("/ablefreelancer" ,AuthenticateUser ,  ablefreelancer )
 router.put("/ableseller"  ,  ableseller )
-router.put("/ablecustomer"  ,  ablecustomer )
+router.put("/ablecustomer" ,AuthenticateUser ,  ablecustomer )
 router.put("/changepassword" ,AuthenticateUser ,  changepassword )
-router.delete("/deletesellerproject"  ,  getallprojects )// to be done
-router.delete("/deletecustomerproject"  ,  getallprojects )// to be done
+router.delete("/deletesellerproject" ,AuthenticateUser ,  getallprojects )// to be done
+router.delete("/deletecustomerproject" ,AuthenticateUser ,  getallprojects )// to be done
 router.post("/addtechnology"  ,  addtechnology )
-router.delete("/deletetechnology/:id"  ,  deletetechnology )
-router.post("/addadmin"  ,  addadmin )
+router.delete("/deletetechnology/:id" ,AuthenticateUser ,  deletetechnology )
+// router.post("/addadmin" ,AuthenticateUser ,  addadmin )
 router.patch("/updateprofile",AuthenticateUser , updateuserprofileById)
 module.exports = router;
