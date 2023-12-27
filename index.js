@@ -8,9 +8,7 @@ app.use(express.json())
 const cors = require("cors")
 require("dotenv").config()
 app.listen(3001)
-app.use(cors({
-    origin:'*'
-}))
+app.use(cors())
 
 app.use("/user" ,  Userrouter)
 // app.use("/blog" ,  Blogrouter)
