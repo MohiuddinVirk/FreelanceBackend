@@ -17,7 +17,7 @@ router.get("/getallfreelanceprojects" ,AuthenticateUser ,  getallprojects )
 router.get("/getcustomerbyid/:id" ,AuthenticateUser ,  getcustomerbyid )
 router.get("/getallfreelanceprojectsbytechnology/:technology" ,AuthenticateUser ,  getallfreelanceprojectsbytechnology )
 router.get("/gettopfreelancecategoriesbyrevenuesort" ,AuthenticateUser ,  gettopfreelancecategoriesbyrevenuesort )
-router.get("/getallfreelancersbyrevenuesort" ,AuthenticateUser ,  getallfreelancersbyrevenuesort )// to be confirmed/////////////////////
+router.get("/getallfreelancersbyrevenuesort" ,AuthenticateUser ,  getallfreelancersbyrevenuesort )
 router.get("/getallfreelanceprojectsassignedbyid/:id" ,AuthenticateUser ,  getallfreelanceprojectsassignedbyid )
 router.get("/getallfreelanceprojectsuploadedbyid/:id" ,AuthenticateUser ,  getallfreelanceprojectsuploadedbyid )
 router.get("/getallsellerprojects" ,AuthenticateUser ,  getallsellerprojects )
@@ -26,9 +26,7 @@ router.get("/getallsellerprojectsbyrevenuesort" ,AuthenticateUser ,  getallselle
 router.get("/getallsellerprojectsbyid/:id" ,AuthenticateUser ,  getallsellerprojectsbyid )
 router.get("/getallsellerprojectdetailbyid/:id" ,AuthenticateUser ,  getallsellerprojectdetailbyid )
 router.get("/getallnotifications"  ,AuthenticateUser,  getallnotifications )
-router.get("/getadminstats"  ,  getadminstats )// to be done
-// router.get("/getadminrevenuetotalfreelance"  ,  getallprojects )// to be done
-// router.get("/getadminrevenuetotalseller"  ,  getallprojects )// to be done
+router.get("/getadminstats" ,AuthenticateUser ,  getadminstats )
 router.get("/gettopfreelancers" ,AuthenticateUser ,  gettopfreelancers )
 router.get("/getallpurchases/:id",AuthenticateUser  ,  getallpurchases )
 router.get("/getallpurchasesincludedetail/:id" ,AuthenticateUser ,  getallpurchasesincludedetail )
@@ -45,10 +43,7 @@ router.put("/ablefreelancer" ,AuthenticateUser ,  ablefreelancer )
 router.put("/ableseller"  ,  ableseller )
 router.put("/ablecustomer" ,AuthenticateUser ,  ablecustomer )
 router.put("/changepassword" ,AuthenticateUser ,  changepassword )
-router.delete("/deletesellerproject" ,AuthenticateUser ,  getallprojects )// to be done
-router.delete("/deletecustomerproject" ,AuthenticateUser ,  getallprojects )// to be done
 router.post("/addtechnology"  ,  addtechnology )
 router.delete("/deletetechnology/:id" ,AuthenticateUser ,  deletetechnology )
-// router.post("/addadmin" ,AuthenticateUser ,  addadmin )
 router.patch("/updateprofile",AuthenticateUser , updateuserprofileById)
 module.exports = router;

@@ -249,6 +249,7 @@ let addadmin=async (req, res) => {
             TotalNumberofFeddbacks: freelancer.TotalNumberofFeddbacks,
             AccountBalance: freelancer.AccountBalance,
             Revenue: revenue,
+            Contact:freelancer.Contact,
             Specialities:freelancer.Specialities
           };
         })
@@ -850,8 +851,33 @@ const technologyRevenueArray = Object.keys(technologyRevenue).map((technology) =
 
 // Sort technologies by revenue in descending order
 const sortedTechnologiesseller = technologyRevenueArray.sort((a, b) => b.revenue - a.revenue);
-
-    res.status(200).json({ totalRevenue,totalRevenuefreelence,assignednumber,deliverednumber,soldnumber,sortedTechnologies,sortedTechnologiesseller });
+///////////
+     // Fetch all projects
+     const allfreelanceprojects = await Project.find({});
+     // Calculate revenue for each technology
+     const freelancetechnologyRevenue = {};
+     allfreelanceprojects.forEach((project) => {
+       const { Keywords, Budget } = project;
+       if (Keywords && Budget) {
+         const projectRevenue = parseInt(Budget, 10);
+         Keywords.forEach((technology) => {
+          freelancetechnologyRevenue[technology] = (freelancetechnologyRevenue[technology] || 0) + projectRevenue;
+         });
+       }
+     });
+ 
+     // Convert technologyRevenue object to an array of objects
+     const freelancetechnologyRevenueArray = Object.keys(freelancetechnologyRevenue).map((technology) => ({
+       technology,
+       revenue: freelancetechnologyRevenue[technology],
+     }));
+ 
+     // Sort technologies by revenue in descending order
+     const freelancesortedTechnologies = freelancetechnologyRevenueArray.sort((a, b) => b.revenue - a.revenue);
+ 
+ 
+    res.status(200).json({ totalRevenue,totalRevenuefreelence,assignednumber,deliverednumber,
+      soldnumber,sortedTechnologies,sortedTechnologiesseller,freelancesortedTechnologies });
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Internal Server Error' });
